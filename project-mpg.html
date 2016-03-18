@@ -126,7 +126,145 @@ print(g)</code></pre>
 </div>
 <div id="boxplot" class="section level2">
 <h2>Boxplot</h2>
-<pre class="r"><code># seriously, that would be cool here</code></pre>
+<pre class="r"><code>gbp = ggplot(data=mtcars,aes(y=mpg,x=as.factor(am)))+
+#    scale_fill_calc()+
+    geom_boxplot(aes(fill=am),size=1,alpha=0.8)+
+    theme(legend.position=&quot;none&quot;)+labs(x=&quot;Transmission&quot;,y=&quot;Miles per gallon&quot;)</code></pre>
+<pre class="r"><code>knitr::kable(as.data.frame(summary(fit)$coef),longtable=T,
+             caption=&quot;Coef of Interaction Model&quot;)</code></pre>
+<table>
+<caption>Coef of Interaction Model</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">23.8791324</td>
+<td align="right">20.0658203</td>
+<td align="right">1.1900402</td>
+<td align="right">0.2525255</td>
+</tr>
+<tr class="even">
+<td align="left">cyl6</td>
+<td align="right">-2.6486953</td>
+<td align="right">3.0408904</td>
+<td align="right">-0.8710262</td>
+<td align="right">0.3974664</td>
+</tr>
+<tr class="odd">
+<td align="left">cyl8</td>
+<td align="right">-0.3361630</td>
+<td align="right">7.1595395</td>
+<td align="right">-0.0469532</td>
+<td align="right">0.9631700</td>
+</tr>
+<tr class="even">
+<td align="left">disp</td>
+<td align="right">0.0355463</td>
+<td align="right">0.0318992</td>
+<td align="right">1.1143329</td>
+<td align="right">0.2826734</td>
+</tr>
+<tr class="odd">
+<td align="left">hp</td>
+<td align="right">-0.0705068</td>
+<td align="right">0.0394256</td>
+<td align="right">-1.7883534</td>
+<td align="right">0.0939316</td>
+</tr>
+<tr class="even">
+<td align="left">drat</td>
+<td align="right">1.1828302</td>
+<td align="right">2.4834846</td>
+<td align="right">0.4762784</td>
+<td align="right">0.6407392</td>
+</tr>
+<tr class="odd">
+<td align="left">wt</td>
+<td align="right">-4.5297758</td>
+<td align="right">2.5387458</td>
+<td align="right">-1.7842573</td>
+<td align="right">0.0946186</td>
+</tr>
+<tr class="even">
+<td align="left">qsec</td>
+<td align="right">0.3678448</td>
+<td align="right">0.9353957</td>
+<td align="right">0.3932505</td>
+<td align="right">0.6996672</td>
+</tr>
+<tr class="odd">
+<td align="left">vs1</td>
+<td align="right">1.9308505</td>
+<td align="right">2.8712578</td>
+<td align="right">0.6724755</td>
+<td align="right">0.5115079</td>
+</tr>
+<tr class="even">
+<td align="left">amManual</td>
+<td align="right">1.2121157</td>
+<td align="right">3.2135451</td>
+<td align="right">0.3771896</td>
+<td align="right">0.7113157</td>
+</tr>
+<tr class="odd">
+<td align="left">gear4</td>
+<td align="right">1.1143549</td>
+<td align="right">3.7995173</td>
+<td align="right">0.2932886</td>
+<td align="right">0.7733203</td>
+</tr>
+<tr class="even">
+<td align="left">gear5</td>
+<td align="right">2.5283960</td>
+<td align="right">3.7363580</td>
+<td align="right">0.6767007</td>
+<td align="right">0.5088975</td>
+</tr>
+<tr class="odd">
+<td align="left">carb2</td>
+<td align="right">-0.9793543</td>
+<td align="right">2.3179745</td>
+<td align="right">-0.4225044</td>
+<td align="right">0.6786509</td>
+</tr>
+<tr class="even">
+<td align="left">carb3</td>
+<td align="right">2.9996387</td>
+<td align="right">4.2935461</td>
+<td align="right">0.6986390</td>
+<td align="right">0.4954678</td>
+</tr>
+<tr class="odd">
+<td align="left">carb4</td>
+<td align="right">1.0914229</td>
+<td align="right">4.4496199</td>
+<td align="right">0.2452845</td>
+<td align="right">0.8095603</td>
+</tr>
+<tr class="even">
+<td align="left">carb6</td>
+<td align="right">4.4775692</td>
+<td align="right">6.3840624</td>
+<td align="right">0.7013668</td>
+<td align="right">0.4938127</td>
+</tr>
+<tr class="odd">
+<td align="left">carb8</td>
+<td align="right">7.2504113</td>
+<td align="right">8.3605664</td>
+<td align="right">0.8672153</td>
+<td align="right">0.3994849</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 

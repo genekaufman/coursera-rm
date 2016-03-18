@@ -69,6 +69,15 @@ print(g)
 
 ## Boxplot
 ```{r boxplot, cache=TRUE}
-# seriously, that would be cool here
+gbp = ggplot(data=mtcars,aes(y=mpg,x=as.factor(am)))+
+#    scale_fill_calc()+
+    geom_boxplot(aes(fill=am),size=1,alpha=0.8)+
+    theme(legend.position="none")+labs(x="Transmission",y="Miles per gallon")
+
 ```
 
+
+```{r huh}
+knitr::kable(as.data.frame(summary(fit)$coef),longtable=T,
+             caption="Coef of Interaction Model")
+```
