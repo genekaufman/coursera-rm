@@ -1,0 +1,74 @@
+---
+title: "Motor Trends - MPG Analysis"
+author: "Gene Kaufman"
+date: "March 17, 2016"
+output: html_document
+---
+
+#Executive Summary
+blah blah blah
+```{r setoptions, message=FALSE, echo=FALSE}
+require(knitr)
+opts_chunk$set(echo=TRUE, results="asis", warning=FALSE, message=FALSE)
+```
+
+now what?  
+
+```{r load_data}
+data(mtcars)
+
+mtcars$cyl <- as.factor(mtcars$cyl)
+mtcars$vs <- as.factor(mtcars$vs)
+mtcars$gear <- as.factor(mtcars$gear)
+mtcars$carb <- as.factor(mtcars$carb)
+mtcars$am <- factor(mtcars$am,labels=c('Auto','Manual'))
+
+```
+
+## Basic EDA  
+```{r eda_1}
+summary(mtcars)
+
+```
+
+## First model  
+```{r model1}
+fit<-lm(mpg~. , data=mtcars)
+summary(fit)
+
+summary(fit)$coef
+
+```
+
+## Second model
+```{r model2}
+fit.am.lm <- lm(mpg ~ am, data=mtcars)
+summary(fit.am.lm)$coef
+
+```
+
+## Pairs plot
+```{r plot1, cache=TRUE}
+require(GGally)
+require(ggplot2)
+#g = ggpairs(mtcars, lower=list(continuous="smooth"),params=c(method="loess"))
+#http://stackoverflow.com/questions/35085261/how-to-use-loess-method-in-ggallyggpairs-using-wrap-function
+# Function to return points and geom_smooth
+# allow for the method to be changed
+my_fn <- function(data, mapping, method="loess", ...){
+  p <- ggplot(data = data, mapping = mapping) +
+    geom_point() +
+    geom_smooth(method=method, ...)
+  p
+}
+
+g = ggpairs(mtcars, lower=list(continuous=my_fn))
+
+print(g)
+```
+
+## Boxplot
+```{r boxplot, cache=TRUE}
+# seriously, that would be cool here
+```
+
