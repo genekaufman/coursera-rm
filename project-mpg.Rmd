@@ -1,18 +1,20 @@
 ---
 title: "Motor Trends - MPG Analysis"
-author: "Gene Kaufman"
+author: 'Gene Kaufman '
 date: "March 17, 2016"
-output: html_document
+output: pdf_document
 ---
 
 #Executive Summary
-blah blah blah
+An analysis of the **mtcars** dataset was performed for *Motor Trend* magazine to answer the question of how MPG is effected by transmission type. A basic analysis of only this variable determined that cars with **Manual** transmissions performed better than **Automatic** transmissions, with **Manual** transmissions getting an average **7.24** mpg better than **Automatics**. When factoring in other dependent variables (**cyl, hp, wt**), **Manual** transmissions only achieved an average **1.81** better gas mileage than cars with **Automatic** transmissions.
+
 ```{r setoptions, message=FALSE, echo=FALSE}
 require(knitr)
 opts_chunk$set(echo=TRUE, results="asis", warning=FALSE, message=FALSE)
 ```
 
-now what?  
+## Data preparation
+The dataset contained a number of fields that needed to be converted to factors, as they just include categorical data.  
 
 ```{r load_data}
 data(mtcars)
@@ -25,59 +27,81 @@ mtcars$am <- factor(mtcars$am,labels=c('Auto','Manual'))
 
 ```
 
-## Basic EDA  
-```{r eda_1}
-summary(mtcars)
+## Exploratory Data Analysis  
+A boxplot (Appendix figure 1) shows that, ignoring all other variables, **Manual** transmissions get better mileage than **Automatics**.  A pairs plot was produced (Appendix figure 2), showing possible correlations between **mpg** and the **cyl, disp, hp, drat, wt, vs and am** variables. Further multiple regression is needed to confirm and quantify any correlations. 
+
+## Simple Linear Regression  
+First, let's see the results of regressing all the variables:  
+```{r model1A, results="markup"}
+fit.all <- lm(mpg ~ . , data=mtcars)
+summary(fit.all)$coef
 
 ```
+(The full summary for this model is in Appendix, Table 1.) The p-values for this summary show that there might be too many variables for any one variable to show a significant effect on the outcome. We'll obviously need to do more in-depth regression.  
 
-## First model  
-```{r model1}
-fit<-lm(mpg~. , data=mtcars)
-summary(fit)
-
-summary(fit)$coef
-
-```
-
-## Second model
-```{r model2}
-fit.am.lm <- lm(mpg ~ am, data=mtcars)
-summary(fit.am.lm)$coef
+Since we've been asked to specifically analyse transmission type, let's see the simple regression against just the **am** variable.    
+```{r model1B, results="markup"}
+fit.am.only <- lm(mpg ~ am , data=mtcars)
+summary(fit.am.only)$coef
 
 ```
+(The full summary for this model is in Appendix, Table 2.) This shows us that when using only the **am** variable, cars with **Manual** transmissions have a **`r round(summary(fit.am.only)$coef[2,1],2) `** increase in mean gas mileage (for a total mean **mpg** of **`r round(sum(summary(fit.am.only)$coef[,1]),2) `**), compared to the mean **mpg** of **`r round(summary(fit.am.only)$coef[1,1],2) `** for **Automatic** transmissions.  
 
-## Pairs plot
-```{r plot1, cache=TRUE}
-require(GGally)
-require(ggplot2)
-#g = ggpairs(mtcars, lower=list(continuous="smooth"),params=c(method="loess"))
-#http://stackoverflow.com/questions/35085261/how-to-use-loess-method-in-ggallyggpairs-using-wrap-function
-# Function to return points and geom_smooth
-# allow for the method to be changed
-my_fn <- function(data, mapping, method="loess", ...){
-  p <- ggplot(data = data, mapping = mapping) +
-    geom_point() +
-    geom_smooth(method=method, ...)
-  p
-}
+## Multiple Regression
+Now we'll use R's **step** function to repeatedly build models with different combinations of variables to determine which model includes only those variables deemed significant to the outcome. We'll start with the model that includes the full set of variables.
+```{r model2A, results="hide"}
+fit.best <- step(fit.all, direction="both")
 
-g = ggpairs(mtcars, lower=list(continuous=my_fn))
+```
+The best model: 
+```{r model2B, echo=FALSE, results="markup"}
+summary(fit.best)$call
 
-print(g)
+summary(fit.best)$coef
+
+fit.best.adj.r.squared <- summary(fit.best)$adj.r.squared
 ```
 
-## Boxplot
-```{r boxplot, cache=TRUE}
+(The full summary for this model is in Appendix, Table 3.) This tells us that while holding all other variables constant, cars with **Manual** transmissions saw an increase in mean MPG of **`r round(summary(fit.best)$coef[6,1],2) `** miles/gallon. The adjusted R-squared value for this model is **`r round(fit.best.adj.r.squared,2) `**, indicating that **`r round(fit.best.adj.r.squared,2) * 100 `%** of the variability is explained by this model.
+
+## Residual Plot   
+A look at the best model's residuals with a Normal Q-Q plot shows that most points fall on the line and are therefore normally distributed:  
+```{r resid1, fig.width=4, fig.height=4, echo=FALSE}
+#par(mfrow=c(2,2))
+plot(fit.best,2)
+```
+
+#Appendix  
+
+*Figure 1: Boxplot of MPG per Transmission Type*  
+```{r boxplot, fig.width=3, fig.height=3, echo=FALSE, cache=FALSE}
+library(ggplot2)
 gbp = ggplot(data=mtcars,aes(y=mpg,x=as.factor(am)))+
-#    scale_fill_calc()+
-    geom_boxplot(aes(fill=am),size=1,alpha=0.8)+
-    theme(legend.position="none")+labs(x="Transmission",y="Miles per gallon")
+    geom_boxplot(aes(fill=am),size=1,alpha=0.75)+
+    theme(legend.position="none")+labs(x="Transmission Type",y="MPG")
+
+print(gbp)
+```
+
+*Figure 2: PAIRS plot of mtcars*  
+```{r fig1, fig.width=6, fig.height=6, echo=FALSE, cache=TRUE}
+pairs(mtcars)
+```
+
+*Table 1: Summary of Basic Regression Model - All variables*  
+```{r app-tbl-1, results="markup"}
+summary(fit.all)
 
 ```
 
+*Table 2: Summary of Basic Regression Model - Only AM variable*  
+```{r app-tbl-2, results="markup"}
+summary(fit.am.only)
 
-```{r huh}
-knitr::kable(as.data.frame(summary(fit)$coef),longtable=T,
-             caption="Coef of Interaction Model")
+```
+
+*Table 3: Summary of Best Fitted Model*  
+```{r app-tbl-3, results="markup"}
+summary(fit.best)
+
 ```

@@ -28,7 +28,7 @@ my_fn <- function(data, mapping, method="loess", ...){
   p
 }
 
-g = ggpairs(mtcars, lower=list(continuous=my_fn))
+##g = ggpairs(mtcars, lower=list(continuous=my_fn))
 
 pairs(mtcars)
 
@@ -38,8 +38,19 @@ sqrt(vif(fit))
 
 
 anova(fit)
-fit2<- lm(mpg ~ factor(am) + cyl + disp + wt, data=mtcars)
+fit2<- lm(mpg ~ am + cyl + disp + wt, data=mtcars)
 anova(fit2)
 
 
 vif(fit2)
+
+#http://www.statmethods.net/stats/regression.html
+coefficients(fit) # model coefficients
+confint(fit, level=0.95) # CIs for model parameters
+fitted(fit) # predicted values
+round(residuals(fit),4) # residuals
+anova(fit) # anova table
+vcov(fit) # covariance matrix for model parameters
+influence(fit) # regression diagnostics
+vif(fit)
+
